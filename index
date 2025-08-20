@@ -1,412 +1,194 @@
 <!DOCTYPE html>
 <html lang="bg">
-<nav>
-  <a href="index.html">Начало</a> |
-  <a href="vision2025-schedule.html">Програма</a>
-</nav>
-  <head>
+
+<head>
   <meta charset="UTF-8">
-  <title>Vision 2025 Schedule</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VISION '25</title>
   <style>
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f2f2f2;
+      color: white;
+    }
+
+    #container {
+      background: #7B1B38;
+      max-width: 100%;
+      min-height: 100vh;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin: 15px;
+    }
+
+    .sticky-search {
+      position: sticky;
+      top: 0;
+      background: #7B1B38;
+      padding: 15px;
+      z-index: 100;
+      border-bottom: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .input-button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input {
+      padding: 14px;
+      border: 1px solid black;
+      border-radius: 6px;
+      background-color: black;
+      color: white;
+      width: 100%;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    button {
+      padding: 14px;
+      background-color: #FFDB58;
+      color: black;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    button:active {
+      background-color: #f0c842;
+    }
+
+    #result {
+      padding: 15px;
+      flex: 1;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid rgba(255,255,255,0.3);
+      margin: 15px 0;
+    }
+
+    a {
+      color: #FFD700;
+      word-break: break-word;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-blue-400 to-blue-600 flex flex-col items-center p-6">
+<body>
+  <div id="container">
+    <h1>VISION '25</h1>
 
-  <h1 class="text-4xl font-bold text-white mb-8">Vision 2025 - Седмичен график</h1>
+    <div class="sticky-search">
+      <div class="input-button-group">
+        <input type="text" id="search" placeholder="Въведи цялото си име" />
+        <button onclick="search()">Търси</button>
+      </div>
+    </div>
 
-  <!-- Tabs -->
-  <div class="flex space-x-2 mb-6">
-    <button class="tab-btn bg-white px-4 py-2 rounded-lg shadow font-semibold" data-day="Monday">Понеделник</button>
-    <button class="tab-btn bg-white px-4 py-2 rounded-lg shadow font-semibold" data-day="Tuesday">Вторник</button>
-    <button class="tab-btn bg-white px-4 py-2 rounded-lg shadow font-semibold" data-day="Wednesday">Сряда</button>
-    <button class="tab-btn bg-white px-4 py-2 rounded-lg shadow font-semibold" data-day="Thursday">Четвъртък</button>
-    <button class="tab-btn bg-white px-4 py-2 rounded-lg shadow font-semibold" data-day="Friday">Петък</button>
-    <button class="tab-btn bg-white px-4 py-2 rounded-lg shadow font-semibold" data-day="Saturday">Събота</button>
-    <button class="tab-btn bg-white px-4 py-2 rounded-lg shadow font-semibold" data-day="Sunday">Неделя</button>
+    <div id="result"></div>
   </div>
 
-  <!-- Schedule Container -->
-  <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden p-4">
+  <script>
+    const people = [
+      { име: "Ангелина Стоевска", ателие: "Пиано", дискусионнаГрупа: "Джан и Дани" },
+      { име: "Павела Янкова", ателие: "Вокал", дискусионнаГрупа: "Джан и Дани" },
+      { име: "Димитър Иванов", ателие: "Барабани", дискусионнаГрупа: "Джан и Дани" },
+      { име: "Младен", ателие: "Барабани", дискусионнаГрупа: "Джан и Дани" },
+      { име: "Стефан Истилиянов", ателие: "Пиано", дискусионнаГрупа: "Джан и Дани" },
+      { име: "Стефан Стоилов", ателие: "Пиано", дискусионнаГрупа: "Джан и Дани" },
+      { име: "Мария Радева", ателие: "Вокал", дискусионнаГрупа: "Джан и Дани" },
+      { име: "Исак Дончев", ателие: "Акустична Китара", дискусионнаГрупа: "Джан и Дани" },
+      { име: "Калина Кирякова", ателие: "Вокал", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Юлиана Стефанова", ателие: "Пиано", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Евтим", ателие: "Барабани", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Тео Евтимов", ателие: "Пиано", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Михаил Дрожов", ателие: "Акустична Китара", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Карина Цветкова", ателие: "Пиано", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Тихомира Динчева", ателие: "Пиано", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Борислава Христова", ателие: "Барабани", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Христо Христов", ателие: "Барабани", дискусионнаГрупа: "Ели и Ники" },
+      { име: "Елисавета Милтенова", ателие: "Акустична Китара", дискусионнаГрупа: "Боби и Силас" },
+      { име: "Наталия Иванова", ателие: "Пиано", дискусионнаГрупа: "Боби и Силас" },
+      { име: "Спасена Грудева", ателие: "Барабани", дискусионнаГрупа: "Боби и Силас" },
+      { име: "Габриела Янкова", ателие: "Акустична Китара", дискусионнаГрупа: "Боби и Силас" },
+      { име: "Найден Манов", ателие: "Барабани", дискусионнаГрупа: "Боби и Силас" },
+      { име: "Виктор Ангелов", ателие: "Акустична Китара", дискусионнаГрупа: "Боби и Силас" },
+      { име: "Теодора Борисова", ателие: "Барабани", дискусионнаГрупа: "Боби и Силас" },
+      { име: "Георги Найденов", ателие: "Пиано", дискусионнаГрупа: "Боби и Силас" },
+      { име: "Павел Найденов", ателие: "Пиано", дискусионнаГрупа: "Пламен и Диа" },
+      { име: "Виктор Евтимов", ателие: "Барабани", дискусионнаГрупа: "Пламен и Диа" },
+      { име: "Богомил Симеонов", ателие: "Акустична Китара", дискусионнаГрупа: "Пламен и Диа" },
+      { име: "Давид", ателие: "Барабани", дискусионнаГрупа: "Пламен и Диа" },
+      { име: "Полина Маркова", ателие: "Вокал", дискусионнаГрупа: "Пламен и Диа" },
+      { име: "Мария Самуилова", ателие: "Вокал", дискусионнаГрупа: "Пламен и Диа" },
+      { име: "Снежана Самуилова", ателие: "Пиано", дискусионнаГрупа: "Пламен и Диа" }
+    ];
 
-    <!-- Monday -->
-    <div id="Monday" class="tab-content">
-      <table class="w-full text-left border-collapse">
-        <thead class="bg-blue-500 text-white">
-          <tr>
-            <th class="p-3">Час</th>
-            <th class="p-3">Активност</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">14:00</td>
-            <td class="p-3 text-gray-900">Пристигане</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">14:00-19:00</td>
-            <td class="p-3 text-gray-900">Настаняване и игри</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">19:00-20:00</td>
-            <td class="p-3 text-gray-900">Вечеря</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">20:00-20:50</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">21:30-22:30</td>
-            <td class="p-3 text-gray-900">Игри</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">23:00</td>
-            <td class="p-3 text-gray-900">Лягане</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    function search() {
+      const query = document.getElementById('search').value.toLowerCase().trim();
+      const resultDiv = document.getElementById('result');
+      const matches = people.filter(p => p.име.toLowerCase().includes(query));
 
-    <!-- Tuesday -->
-    <div id="Tuesday" class="tab-content active">
-      <table class="w-full text-left border-collapse">
-        <thead class="bg-blue-500 text-white">
-          <tr>
-            <th class="p-3">Час</th>
-            <th class="p-3">Активност</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">08:30 - 09:30</td>
-            <td class="p-3 text-gray-900">Закуска</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">09:30 - 10:15</td>
-            <td class="p-3 text-gray-900">Хваление и споделяне</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">10:15 - 11:00</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">11:00 - 12:00</td>
-            <td class="p-3 text-gray-900">Ателета</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">12:00 - 13:30</td>
-            <td class="p-3 text-gray-900">ОЗХ / Спорт / Медия / Хореография</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">13:30 - 14:30</td>
-            <td class="p-3 text-gray-900">Обяд</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">14:30 - 16:00</td>
-            <td class="p-3 text-gray-900">Обедна почивка / Снимане на клип</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">16:00 - 17:20</td>
-            <td class="p-3 text-gray-900">Игри (Група 1 и 2) / Зала (Група 3 и 4)</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">17:20 - 18:40</td>
-            <td class="p-3 text-gray-900">Игри (Група 3 и 4) / Зала (Група 1 и 2)</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">19:00 - 20:00</td>
-            <td class="p-3 text-gray-900">Вечеря</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">20:00 - 21:00</td>
-            <td class="p-3 text-gray-900">Вечерна програма</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">21:00 - 21:30</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">21:30 - 23:00</td>
-            <td class="p-3 text-gray-900">Отборни игри</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">23:00</td>
-            <td class="p-3 text-gray-900">Лягане</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      if (matches.length > 0) {
+        let resultHTML = '';
+        matches.forEach(person => {
+          let songLink = '';
+          if (person.дискусионнаГрупа === "Джан и Дани") {
+            songLink = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=E5qosxxZhdQDdu4TIieSWb5-&tab_id=27060140" target="_blank">That's Who I Praise</a>`;
+          } else if (person.дискусионнаГрупа === "Ели и Ники") {
+            songLink = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=_y9vKYodm85jauNS40-3BcrL&tab_id=27059570" target="_blank">Gratitude</a>`;
+          } else if (person.дискусионнаГрупа === "Боби и Силас") {
+            songLink = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=XJHBz5GUZeG3H-QRNzvBRHoX&tab_id=27060020" target="_blank">Royalty</a>`;
+          } else if (person.дискусионнаГрупа === "Пламен и Диа") {
+            songLink = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=jpxkAnukI5vYy5-Fnr7b5321&tab_id=27059417" target="_blank">Hard Fought Hallelujah</a>`;
+          }
 
-    <!-- Wednesday (edited) -->
-    <div id="Wednesday" class="tab-content">
-      <table class="w-full text-left border-collapse">
-        <thead class="bg-blue-500 text-white">
-          <tr>
-            <th class="p-3">Час</th>
-            <th class="p-3">Активност</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">08:30 - 09:30</td>
-            <td class="p-3 text-gray-900">Закуска</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">09:30 - 10:15</td>
-            <td class="p-3 text-gray-900">Хваление и споделяне</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">10:15 - 11:00</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">11:00 - 12:00</td>
-            <td class="p-3 text-gray-900">Ателета</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">12:00 - 13:30</td>
-            <td class="p-3 text-gray-900">ОЗХ / Спорт / Медия / Хореография</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">13:30 - 14:30</td>
-            <td class="p-3 text-gray-900">Обяд</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">14:30 - 16:00</td>
-            <td class="p-3 text-gray-900">Обедна почивка / Снимане на клип</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">16:00 - 17:20</td>
-            <td class="p-3 text-gray-900">Игри (Група 1 и 2) / Зала (Група 3 и 4)</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">17:20 - 18:40</td>
-            <td class="p-3 text-gray-900">Игри (Група 3 и 4) / Зала (Група 1 и 2)</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">19:00 - 20:00</td>
-            <td class="p-3 text-gray-900">Вечеря</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">20:00 - 21:00</td>
-            <td class="p-3 text-gray-900">Вечерна програма</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">21:00 - 21:30</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">21:30 - 23:00</td>
-            <td class="p-3 text-gray-900">Вечер на талантите и героите</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">23:00</td>
-            <td class="p-3 text-gray-900">Лягане</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          resultHTML += `
+            <div>
+              <strong>Име:</strong> ${person.име}<br>
+              <strong>Ателиe:</strong> ${person.ателие}<br>
+              <strong>Дискусионна Група:</strong> ${person.дискусионнаГрупа}<br>
+              <strong>Песен:</strong> ${songLink}<br>
+            </div>
+            <hr>
+          `;
+        });
+        resultDiv.innerHTML = resultHTML;
+      } else {
+        resultDiv.innerHTML = `<span style="color: yellow;">Не е намерено съвпадение. Провери правописа.</span>`;
+      }
+    }
 
-    <!-- Thursday -->
-    <div id="Thursday" class="tab-content">
-      <table class="w-full text-left border-collapse">
-        <thead class="bg-blue-500 text-white">
-          <tr>
-            <th class="p-3">Час</th>
-            <th class="p-3">Активност</th>
-          </tr>
-        </thead>
-        <tbody>
-           <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">08:30 - 09:30</td>
-            <td class="p-3 text-gray-900">Закуска</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">09:30 - 10:15</td>
-            <td class="p-3 text-gray-900">Хваление и споделяне</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">10:15 - 11:00</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">11:00 - 12:00</td>
-            <td class="p-3 text-gray-900">Ателета</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">12:00 - 13:30</td>
-            <td class="p-3 text-gray-900">ОЗХ / Спорт / Медия / Хореография</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">13:30 - 14:30</td>
-            <td class="p-3 text-gray-900">Обяд</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">14:30 - 16:00</td>
-            <td class="p-3 text-gray-900">Обедна почивка / Снимане на клип</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">16:00 - 17:20</td>
-            <td class="p-3 text-gray-900">Игри (Група 1 и 2) / Зала (Група 3 и 4)</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">17:20 - 18:40</td>
-            <td class="p-3 text-gray-900">Игри (Група 3 и 4) / Зала (Група 1 и 2)</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">19:00 - 20:00</td>
-            <td class="p-3 text-gray-900">Вечеря</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">20:00 - 21:00</td>
-            <td class="p-3 text-gray-900">Вечерна програма</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">21:00 - 21:30</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">21:30 - 23:00</td>
-            <td class="p-3 text-gray-900">Филм</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">23:00</td>
-            <td class="p-3 text-gray-900">Лягане</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
- 
-    <!-- Friday -->
-    <div id="Friday" class="tab-content">
-      <table class="w-full text-left border-collapse">
-        <thead class="bg-blue-500 text-white">
-          <tr>
-            <th class="p-3">Час</th>
-            <th class="p-3">Активност</th>
-          </tr>
-        </thead>
-        <tbody>
-           <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">08:30 - 09:30</td>
-            <td class="p-3 text-gray-900">Закуска</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">09:30 - 10:15</td>
-            <td class="p-3 text-gray-900">Хваление и споделяне</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">10:15 - 11:00</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">11:00 - 12:00</td>
-            <td class="p-3 text-gray-900">Ателета</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">12:00 - 13:30</td>
-            <td class="p-3 text-gray-900">ОЗХ / Спорт / Медия / Хореография</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">13:30 - 14:30</td>
-            <td class="p-3 text-gray-900">Обяд</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">14:30 - 16:00</td>
-            <td class="p-3 text-gray-900">Обедна почивка / Снимане на клип</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">16:00 - 17:20</td>
-            <td class="p-3 text-gray-900">Игри (Група 1 и 2) / Зала (Група 3 и 4)</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">17:20 - 18:40</td>
-            <td class="p-3 text-gray-900">Обща репетиция</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">19:00 - 20:00</td>
-            <td class="p-3 text-gray-900">Вечеря</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">20:00 - 20:35</td>
-            <td class="p-3 text-gray-900">Вечерна програма</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">20:35-23:00</td>
-            <td class="p-3 text-gray-900">Altar Worship</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">23:00</td>
-            <td class="p-3 text-gray-900">Лягане</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-     <!-- Saturday -->
-    <div id="Saturday" class="tab-content">
-      <table class="w-full text-left border-collapse">
-        <thead class="bg-blue-500 text-white">
-          <tr>
-            <th class="p-3">Час</th>
-            <th class="p-3">Активност</th>
-          </tr>
-        </thead>
-        <tbody>
-           <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">08:30 - 09:30</td>
-            <td class="p-3 text-gray-900">Закуска</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">09:30 - 10:15</td>
-            <td class="p-3 text-gray-900">Хваление и споделяне</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">10:15 - 11:00</td>
-            <td class="p-3 text-gray-900">Дискусионни групи</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">11:00 - 12:00</td>
-            <td class="p-3 text-gray-900">Ателета</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">12:00 - 13:30</td>
-            <td class="p-3 text-gray-900">ОЗХ / Спорт / Медия / Хореография</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">13:30 - 14:30</td>
-            <td class="p-3 text-gray-900">Обяд</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">14:30 - 17:00</td>
-            <td class="p-3 text-gray-900">Генерална репетиция</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">17:00 - 18:0</td>
-            <td class="p-3 text-gray-900">Събиране на техника</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">18:00-19:00</td>
-            <td class="p-3 text-gray-900">Почивка</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">19:00 - 20:00</td>
-            <td class="p-3 text-gray-900">Вечеря</td>
-          </tr>
-          <tr class="bg-gray-50 hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">20:00 - 20:40</td>
-            <td class="p-3 text-gray-900">Вечерна програма</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">20:40 - 23:00</td>
-            <td class="p-3 text-gray-900">Лагерен огън</td>
-          </tr>
-          <tr class="bg-white hover:bg-blue-50">
-            <td class="p-3 font-medium text-gray-700">23:00</td>
-            <td class="p-3 text-gray-900">Лягане</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    // Allow pressing Enter to trigger search
+    document.getElementById("search").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        search();
+      }
+    });
+  </script>
+</body>
+</html>
