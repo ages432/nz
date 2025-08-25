@@ -1,9 +1,5 @@
 <!DOCTYPE html>
 <html lang="bg">
-<nav>
-  <a href="index.html">Начало</a> |
-  <a href="vision2025-schedule.html">Програма</a>
-</nav>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -99,6 +95,19 @@
     a:hover {
       text-decoration: underline;
     }
+
+    .songs {
+      background-color: #FFDB58;
+      color: black;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .songs a {
+      color: black;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -153,6 +162,13 @@
       { име: "Елена Желязкова", ателие: "Пиано", дискусионнаГрупа: "Пламен и Диа" }
     ];
 
+    const ателиеМеста = {
+      "Пиано": "Трапезария",
+      "Вокал": "Трапезария",
+      "Барабани": "Зала",
+      "Акустична Китара": "Етаж 2"
+    };
+
     function search() {
       const query = document.getElementById('search').value.toLowerCase().trim();
       const resultDiv = document.getElementById('result');
@@ -161,23 +177,33 @@
       if (matches.length > 0) {
         let resultHTML = '';
         matches.forEach(person => {
-          let songLink = '';
+          let song1 = '';
+          let song2 = '';
+
           if (person.дискусионнаГрупа === "Джан и Дани") {
-            songLink = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=E5qosxxZhdQDdu4TIieSWb5-&tab_id=27060140" target="_blank">That's Who I Praise</a>`;
+            song1 = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=YjH_7BZJbtDLGa6oyISgAdCP&tab_id=27132875" target="_blank">Моят Бог</a>`;
+            song2 = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=E5qosxxZhdQDdu4TIieSWb5-&tab_id=27060140" target="_blank">That's Who I Praise</a>`;
           } else if (person.дискусионнаГрупа === "Ели и Ники") {
-            songLink = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=_y9vKYodm85jauNS40-3BcrL&tab_id=27059570" target="_blank">Gratitude</a>`;
+            song1 = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=c_XESDmL0JyOTLQ8Y2c0B-sh&tab_id=27133133" target="_blank">Гробът Става Градина</a>`;
+            song2 = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=_y9vKYodm85jauNS40-3BcrL&tab_id=27059570" target="_blank">Gratitude</a>`;
           } else if (person.дискусионнаГрупа === "Боби и Силас") {
-            songLink = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=XJHBz5GUZeG3H-QRNzvBRHoX&tab_id=27060020" target="_blank">Royalty</a>`;
+            song1 = `(not ready)`; 
+            song2 = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=XJHBz5GUZeG3H-QRNzvBRHoX&tab_id=27060020" target="_blank">Royalty</a>`;
           } else if (person.дискусионнаГрупа === "Пламен и Диа") {
-            songLink = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=jpxkAnukI5vYy5-Fnr7b5321&tab_id=27059417" target="_blank">Hard Fought Hallelujah</a>`;
+            song1 = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=n7j_lEznEF3n_lFk8lwaSALQ&tab_id=27131711" target="_blank">Няма Подобен</a>`;
+            song2 = `<a href="https://tabs.ultimate-guitar.com/user/tab/view?h=jpxkAnukI5vYy5-Fnr7b5321&tab_id=27059417" target="_blank">Hard Fought Hallelujah</a>`;
           }
 
           resultHTML += `
+            <div class="songs">
+              🎵 <strong>Песен 1:</strong> ${song1}<br>
+              🎵 <strong>Песен 2:</strong> ${song2}
+            </div>
             <div>
               <strong>Име:</strong> ${person.име}<br>
               <strong>Ателиe:</strong> ${person.ателие}<br>
+              <strong>Място на ателие:</strong> ${ателиеМеста[person.ателие] || "Няма информация"}<br>
               <strong>Дискусионна Група:</strong> ${person.дискусионнаГрупа}<br>
-              <strong>Песен:</strong> ${songLink}<br>
             </div>
             <hr>
           `;
@@ -188,7 +214,6 @@
       }
     }
 
-    // Allow pressing Enter to trigger search
     document.getElementById("search").addEventListener("keyup", function(event) {
       if (event.key === "Enter") {
         search();
